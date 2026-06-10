@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-caravan
 category: bitcoin
 name: Caravan
-version: "1.19.1"
+version: "1.19.2"
 tagline: Stateless multisig coordinator for your Bitcoin node
 description: >-
   Caravan is a fully open-source, stateless Bitcoin multisig coordinator. Build
@@ -40,10 +40,12 @@ path: ""
 defaultUsername: ""
 defaultPassword: ""
 releaseNotes: >-
-  First Gitea-hosted development release. The app image is not pulled from a
-  registry - it is built on-device at install time from the git build context
-  http://umbrel.local:8085/caravan-store/caravan.git#umbrel (umbrel branch of
-  the local Caravan fork).
+  Fix: the built-in /bitcoind proxy now serves both /bitcoind and /bitcoind/
+  directly. Previously the no-slash form returned a 308 redirect whose
+  Location header lost the :4242 port, stranding Caravan's "Test Connection"
+  on the dashboard port. (Upstream Caravan remains v1.19.1; this is a
+  packaging revision, rebuilt on-device from
+  http://umbrel.local:8085/caravan-store/caravan.git#umbrel commit f49be4d.)
 icon: https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/assets/images/caravan-logo-transparent.png
 submitter: Alex
 submission: http://umbrel.local:8085/caravan-store/umbrel-community-app-store
