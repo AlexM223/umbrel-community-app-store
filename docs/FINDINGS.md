@@ -90,18 +90,32 @@ browser (request/console capture) and by direct RPC probes through the proxy.
    (no request is sent), while the UI shows only "Unable to import, check your
    settings and try again". The Test Connection button still succeeds (it
    only does non-wallet RPC), which makes this maddening to diagnose.
+   *Fixed in this fork (1.19.3):* on Umbrel, imported configs are auto-filled
+   with a complete private client — `walletName` defaults to `caravan-main` —
+   so the empty-walletName dead end can't be reached from the normal flow.
 2. **Importing a wallet config resets the client.** A config file with
    `"client": null` silently switches the app back to the default public-API
    client with an empty base URL. Embed the full client object (type, url,
    username, walletName) in configs you intend to re-import. Passwords are
    never stored in configs; with this proxy any non-empty password works.
+   *Fixed in this fork (1.19.3):* `"client": null` now triggers the
+   zero-config defaults instead (private client, same-origin `/bitcoind`
+   proxy URL, dummy credentials — the proxy injects the real ones
+   server-side). localhost URLs in imported configs are rewritten to the
+   proxy; deliberate non-localhost URLs are honored. A related bug where an
+   imported config could keep the *previous* client's wallet name is fixed
+   too.
 3. **"invalid response from <url>" is a catch-all.** Observed causes, in
    decreasing frequency: (a) addresses not yet imported into the node wallet —
    the HTTP responses are actually `200` with valid `getaddressinfo` JSON;
    (b) bitcoind JSON-RPC errors like `-18` (wallet not loaded / wrong
    walletName) and `-19` (root-path call with multiple wallets loaded), whose
    messages Caravan swallows; (c) any non-JSON reply. The console floods with
-   one error per polled address.
+   one error per polled address. The crucial wrinkle: bitcoind reuses error
+   code **`-4`** for *both* "address not in wallet" *and* "wallet is
+   currently rescanning" — the only way to tell them apart is to check
+   `getwalletinfo.scanning` **before** interpreting a `-4`. That ambiguity
+   was the root cause of the rescan crash (quirk 5).
 4. **Wallet RPCs are routed correctly.** When `walletName` is set, all wallet
    calls go to `/wallet/<name>` (verified: 80+ consecutive requests). Multiple
    loaded wallets on the node are fine *as long as* every Caravan wallet
@@ -110,15 +124,28 @@ browser (request/console capture) and by direct RPC probes through the proxy.
    every wallet RPC fails and Caravan eventually hits a minified React crash
    (#168); clicks stop working. The scan itself is unaffected. Recover with a
    full page reload after the scan completes.
-6. **No persistence.** Caravan keeps wallet state in memory only (its
-   localStorage is empty) — every page reload requires re-importing the wallet
-   config. Plan your debugging around that.
+   *Fixed in this fork (1.19.3):* all wallet-RPC consumers are gated on a
+   single `scanStatus` state, and the ambiguous `-4` error (quirk 3) is only
+   interpreted after checking `getwalletinfo.scanning`. During a scan the UI
+   shows a progress bar (2 s `getwalletinfo` poll), disables Refresh/Import,
+   and pops a snackbar on completion — no crash, no console flood, and
+   reloading mid-scan resumes the progress display.
+6. **Persistence is session-scoped.** Caravan persists the wallet config in
+   `sessionStorage` under the key `caravan_config` (localStorage stays
+   empty), so a same-tab reload restores it; only new tabs, windows, or
+   browser sessions start empty and need the config re-imported. Plan your
+   debugging around the tab boundary.
 7. **Watch-only prerequisite.** Caravan expects a wallet to exist on the node:
    `createwallet` with `disable_private_keys: true, blank: true,
    load_on_startup: true`, then Caravan's **Import Addresses** writes the
    wallet's descriptors (`importdescriptors`, ~1000-entry keypool, receive +
    change) into it. Without a rescan, descriptors import with a current
    timestamp — balances stay 0 until you rescan.
+   *Fixed in this fork (1.19.3):* the node wallet is created/loaded
+   automatically with exactly those flags (plus descriptors) for whatever
+   `walletName` the config specifies, descriptors import right after wallet
+   confirm, and a first-time rescan starts automatically whenever the node
+   wallet has no history (`txcount` 0).
 8. **Rescans are fast with block filters.** With `blockfilterindex=1`
    (Umbrel's Bitcoin app default), a genesis-to-tip descriptor rescan finished
    in **minutes** on a fully-synced mainnet node — bitcoind uses BIP158
@@ -128,24 +155,76 @@ browser (request/console capture) and by direct RPC probes through the proxy.
 
 - **Install**: add store → install → watch dashboard (build streams to the
   umbreld journal). App at `http://umbrel.local:4242`.
-- **Connect**: README "Connecting Caravan to your node" — private client,
-  proxy URL, any creds, named watch-only wallet.
+- **Connect**: zero-config since 1.19.3 — import a wallet config, click
+  Confirm (README "Connecting Caravan to your node"). The manual
+  private-client setup lives in the README's "Advanced" section.
 - **Update loop**: push fork/store changes → bump manifest version → apply
   update in the dashboard.
 - **Diagnose without SSH**: the proxy is your RPC window —
   `curl -X POST http://umbrel.local:4242/bitcoind/ -d '{"jsonrpc":"1.0","id":"x","method":"getblockchaininfo","params":[]}'`
   (root path) and `/bitcoind/wallet/<name>` (wallet path, e.g.
   `getwalletinfo` shows `scanning` progress during a rescan).
-- **UI dead during rescan**: expected (quirk 5). Wait for
-  `"scanning": false`, then hard-reload and re-import the config (quirk 6).
+- **UI dead during rescan**: upstream v1.19.1 behavior (quirk 5; the 1.19.3
+  fork shows a progress bar instead). On the old build, wait for
+  `"scanning": false`, then reload — a same-tab reload restores the config
+  (quirk 6).
 
-## Known issues / roadmap
+## Zero-config mode (1.19.3)
 
-Planned packaging revision (error-UX fixes in the fork, shipping as 1.19.3):
-replace the per-address "invalid response" flood with a single "addresses not
-yet imported" hint; validate `walletName` inline in the client form; surface
-bitcoind's JSON-RPC error codes/messages; survive the rescanning state without
-a React crash. Candidates for upstreaming to caravan-bitcoin/caravan.
+The 1.19.3 fork makes the Umbrel build self-configuring. The moving parts:
+
+- **Runtime config file.** A second entrypoint script
+  (`41-umbrel-config.sh`, alongside the proxy generator) writes
+  `/umbrel-config.json` at container start:
+
+  ```json
+  {"umbrel": true, "bitcoindPath": "/bitcoind", "network": "<chain>"}
+  ```
+
+  `network` comes from `BITCOIND_NETWORK` (Umbrel's `APP_BITCOIN_NETWORK`,
+  passed through by the compose file; the container defaults to mainnet if
+  unset). nginx serves the file with `Cache-Control: no-store`, so a cached
+  copy can never pin a stale node config.
+- **404 = stock Caravan.** The SPA fetches `/umbrel-config.json` once at
+  boot; if it isn't there (any non-Umbrel deployment), the app behaves
+  exactly like upstream Caravan. The same image is therefore safe anywhere.
+- **Initial-state seeding.** The fetched config seeds Caravan's *initial*
+  client state rather than patching it afterwards, so even Clear Wallet /
+  reset flows land back on the configured private client instead of the
+  public-API default.
+- **The auto pipeline.** On wallet confirm: *ensure node wallet*
+  (`listwallets` → `loadwallet` → `createwallet` blank / watch-only /
+  descriptors / `load_on_startup`, for whatever `walletName` the config
+  names, default `caravan-main`) → *probe* the wallet's history → *import
+  descriptors* → *conditional rescan* (only when `getwalletinfo.txcount` is
+  0, i.e. a first-time wallet) → *poll* `getwalletinfo` every 2 s to drive
+  the progress bar, with Refresh/Import disabled and a snackbar on
+  completion. Reloading mid-scan re-detects the running scan and resumes the
+  progress UI.
+- **Scan gating.** Every wallet-RPC consumer hangs off one shared
+  `scanStatus` state, and bitcoind's overloaded `-4` error (quirk 3) is only
+  interpreted after checking `getwalletinfo.scanning`. That single choke
+  point is what eliminated both the per-address "invalid response" flood and
+  the React #168 crash.
+
+## Shipped in 1.19.3
+
+The packaging revision previously listed here as roadmap shipped in the
+1.19.3 fork (built on-device from
+`https://github.com/AlexM223/caravan.git#umbrel`): zero-config node
+connection (quirks 1, 2 and 7 automated away), automatic descriptor import
+and first-time rescan with a progress UI, rescan-safe wallet RPCs (no more
+"invalid response" flood or React crash — quirks 3/5), and a fix for imported
+configs keeping a stale client's wallet name. The fork commits, in order:
+error-surfacing foundation; node-wallet management in the clients package
+(`listwallets`/`createwallet`/`loadwallet` + scan status); Umbrel runtime
+config; zero-config client defaults; auto-import + auto-rescan.
+
+Considered and deliberately **not** done: per-wallet node wallets (one
+watch-only wallet per Caravan config instead of a shared `caravan-main`) and
+opt-in config persistence beyond sessionStorage — both add state and surface
+area without removing a user step from the happy path. Upstreaming the fixes
+to caravan-bitcoin/caravan remains on the table.
 
 ## Verification performed
 
@@ -161,3 +240,5 @@ a React crash. Candidates for upstreaming to caravan-bitcoin/caravan.
 - The edit→push→update loop exercised with a real bugfix (the 308/port bug
   above): version bump offered in the dashboard, on-device rebuild from the
   git context, fixed behavior live.
+- (The above covers 1.19.2; verification of the 1.19.3 zero-config release is
+  described in the repo README and the manifest release notes.)

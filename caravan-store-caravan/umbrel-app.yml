@@ -2,24 +2,18 @@ manifestVersion: 1
 id: caravan-store-caravan
 category: bitcoin
 name: Caravan
-version: "1.19.2"
+version: "1.19.3"
 tagline: Stateless multisig coordinator for your Bitcoin node
 description: >-
   Caravan is a fully open-source, stateless Bitcoin multisig coordinator. Build
   and manage multisig wallets (2-of-3, 3-of-5, ...), coordinate PSBTs, and use
   hardware wallets - without storing any keys.
 
-  This build is wired to YOUR Umbrel Bitcoin node:
-
-  1. Open Caravan and go to a wallet's client settings.
-
-  2. Choose "Private Node".
-
-  3. URL: http://umbrel.local:4242/bitcoind
-
-  4. Username/password: enter anything non-empty. The app's built-in proxy
-  signs requests to your node with its real RPC credentials server-side, so
-  you never have to copy them.
+  Wired to your Umbrel Bitcoin node automatically: import any wallet config
+  (even ones without client info) and Caravan connects through the app's
+  built-in node proxy, creates a watch-only wallet on your node, imports your
+  addresses, and scans the chain for your history on first use - no
+  credentials, URLs, or config editing needed.
 
   Note: the proxy is reachable by anyone on your local network and forwards
   authenticated RPC to your node (same trust model as your node's LAN-exposed
@@ -40,11 +34,16 @@ path: ""
 defaultUsername: ""
 defaultPassword: ""
 releaseNotes: >-
-  Fix: the built-in /bitcoind proxy now serves both /bitcoind and /bitcoind/
-  directly (a 308 redirect previously lost the public port via nginx $host).
-  The app image is built on-device at install time from the git build context
-  https://github.com/AlexM223/caravan.git#umbrel (commit f49be4d; upstream
-  Caravan v1.19.1 plus Umbrel packaging).
+  Zero-config node connection: wallet configs imported without client info
+  (e.g. exports from caravanmultisig.com) now connect to your node through
+  the built-in proxy automatically - no URLs or credentials to enter, just
+  click Confirm. The watch-only node wallet is created and loaded for you,
+  addresses import automatically after wallet confirm, and a first-time
+  blockchain rescan runs by itself with a progress bar. Also fixed: the
+  "invalid response" console spam, the UI crash during rescans, and a bug
+  where an imported config could keep a stale client's wallet name. The app
+  image is built on-device at install time from the git build context
+  https://github.com/AlexM223/caravan.git#umbrel.
 icon: https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/assets/images/caravan-logo-transparent.png
 submitter: Alex
 submission: https://github.com/AlexM223/umbrel-community-app-store

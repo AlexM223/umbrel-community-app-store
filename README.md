@@ -26,38 +26,29 @@ updates and reinstalls are much faster thanks to Docker layer caching.
 
 ## Connecting Caravan to your node
 
-The app's nginx serves the Caravan UI and reverse-proxies `/bitcoind` to your
-node's RPC, injecting the node's real credentials **server-side** — you never
-have to copy them into a browser.
+Zero-config as of 1.19.3 — the app wires itself to your Umbrel's Bitcoin node:
 
-1. Create a watch-only wallet on your node (one-time, holds no keys). From any
-   machine on your LAN:
+1. **Import your wallet config.** Configs without client info — e.g. exports
+   from [caravanmultisig.com](https://www.caravanmultisig.com) — are pointed
+   at the app's built-in `/bitcoind` proxy automatically, and the proxy
+   injects your node's real RPC credentials **server-side**. No URLs,
+   usernames, or passwords to enter: a "Connected to your Umbrel node" status
+   line replaces the password prompt, and your only action is clicking
+   **Confirm**. (Configs that deliberately point at a non-localhost node are
+   honored unchanged; localhost URLs are rewritten to the proxy.)
 
-   ```sh
-   curl -X POST http://umbrel.local:4242/bitcoind/ \
-     -d '{"jsonrpc":"1.0","id":"1","method":"createwallet","params":{"wallet_name":"caravan-main","disable_private_keys":true,"blank":true,"load_on_startup":true}}'
-   ```
+2. **Everything else is automatic.** Caravan creates and loads a watch-only
+   wallet on your node (`caravan-main` by default, or whatever `walletName`
+   your config specifies — it never holds private keys), imports your
+   addresses, and, when the node wallet has no history yet, starts a
+   first-time blockchain rescan on its own with a progress bar. The first
+   scan takes minutes on Umbrel's node (`blockfilterindex=1` is its default);
+   Refresh/Import stay disabled until it finishes, and reloading mid-scan
+   resumes the progress display.
 
-2. In Caravan (wallet import screen or your wallet-config JSON), set the client to:
-
-   ```json
-   "client": {
-     "type": "private",
-     "url": "http://umbrel.local:4242/bitcoind",
-     "username": "anything",
-     "walletName": "caravan-main"
-   }
-   ```
-
-   Username/password can be anything non-empty (the proxy overrides them).
-   **`walletName` is required** — without it Caravan refuses every wallet call
-   (see [docs/FINDINGS.md](docs/FINDINGS.md#caravan-quirks)).
-
-3. After importing your wallet config: **Import Addresses** (writes your
-   descriptors into the watch-only wallet), then toggle **Rescan** on and run
-   Import Addresses again to backfill history. On a node with
-   `blockfilterindex=1` (Umbrel's default) a full rescan takes minutes, not
-   hours. Reload the page when the scan finishes.
+Pointing Caravan at a different node, or debugging? See
+[Advanced: manual client configuration](#advanced-manual-client-configuration-non-umbrel-or-troubleshooting)
+at the end of this README.
 
 ## How the build works
 
@@ -100,3 +91,38 @@ Docker config, no SSH onto the device — git build contexts work out of the box
 Everything learned building and debugging this — Umbrel app-store mechanics,
 the nginx proxy design (and the port-dropping 308 bug), Caravan client quirks,
 rescan behavior — is written up in [docs/FINDINGS.md](docs/FINDINGS.md).
+
+## Advanced: manual client configuration (non-Umbrel or troubleshooting)
+
+The zero-config flow above covers normal use. The manual steps it replaced
+are kept here for pointing Caravan at a non-Umbrel node, or for
+troubleshooting by hand.
+
+1. Create a watch-only wallet on your node (one-time, holds no keys). From any
+   machine on your LAN:
+
+   ```sh
+   curl -X POST http://umbrel.local:4242/bitcoind/ \
+     -d '{"jsonrpc":"1.0","id":"1","method":"createwallet","params":{"wallet_name":"caravan-main","disable_private_keys":true,"blank":true,"load_on_startup":true}}'
+   ```
+
+2. In Caravan (wallet import screen or your wallet-config JSON), set the client to:
+
+   ```json
+   "client": {
+     "type": "private",
+     "url": "http://umbrel.local:4242/bitcoind",
+     "username": "anything",
+     "walletName": "caravan-main"
+   }
+   ```
+
+   Username/password can be anything non-empty (the proxy overrides them).
+   **`walletName` is required** — without it Caravan refuses every wallet call
+   (see [docs/FINDINGS.md](docs/FINDINGS.md#caravan-quirks)).
+
+3. After importing your wallet config: **Import Addresses** (writes your
+   descriptors into the watch-only wallet), then toggle **Rescan** on and run
+   Import Addresses again to backfill history. On a node with
+   `blockfilterindex=1` (Umbrel's default) a full rescan takes minutes, not
+   hours. Reload the page when the scan finishes.
