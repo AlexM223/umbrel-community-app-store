@@ -235,10 +235,13 @@ state in the node's `wallets/caravan-main/wallet.dat`, surviving app
 reinstalls).
 
 1.19.5 therefore derives a wallet per config —
-`caravan-<first 8 hex of SHA-256(network, addressType, quorum, sorted
-xpubs)>` — so the same config always reuses its wallet (one rescan, ever)
-and different configs can never see each other. An explicit
-`client.walletName` is honored verbatim. Node side effects (create/load/
+`caravan-<FNV-1a-64 hex of (network, addressType, quorum, sorted xpubs)>` —
+so the same config always reuses its wallet (one rescan, ever) and different
+configs can never see each other. An explicit `client.walletName` is honored
+verbatim. (FNV-1a instead of SHA-256 for a hard-won reason: `crypto.subtle`
+only exists in secure contexts, and the Umbrel app serves over plain http on
+the LAN — the first 1.19.5 build silently broke every import because the
+digest call threw. It's a naming scheme, not a security boundary.) Node side effects (create/load/
 import) also moved strictly to the Confirm click: connection tests are
 reachability-only (`estimatesmartfee`), and `ensureNodeWallet` throws if it
 runs before a name is set. The confirm screen displays the derived name in

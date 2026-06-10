@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-caravan
 category: bitcoin
 name: Caravan
-version: "1.19.5"
+version: "1.19.6"
 tagline: Stateless multisig coordinator for your Bitcoin node
 description: >-
   Caravan is a fully open-source, stateless Bitcoin multisig coordinator. Build
