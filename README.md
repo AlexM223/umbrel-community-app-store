@@ -37,14 +37,19 @@ Zero-config as of 1.19.3 — the app wires itself to your Umbrel's Bitcoin node:
    **Confirm**. (Configs that deliberately point at a non-localhost node are
    honored unchanged; localhost URLs are rewritten to the proxy.)
 
-2. **Everything else is automatic.** Caravan creates and loads a watch-only
-   wallet on your node (`caravan-main` by default, or whatever `walletName`
-   your config specifies — it never holds private keys), imports your
-   addresses, and, when the node wallet has no history yet, starts a
-   first-time blockchain rescan on its own with a progress bar. The first
-   scan takes minutes on Umbrel's node (`blockfilterindex=1` is its default);
-   Refresh/Import stay disabled until it finishes, and reloading mid-scan
-   resumes the progress display.
+2. **Everything else is automatic.** When you click Confirm, Caravan creates
+   and loads a **dedicated** watch-only wallet on your node for this config —
+   named `caravan-<hash>`, derived deterministically from the config (or
+   whatever `walletName` it specifies; the confirm screen shows the name and
+   lets you edit it). It never holds private keys, each wallet config gets
+   its own node wallet (no cross-contamination between wallets — Bitcoin
+   Core can't remove imported descriptors, so sharing one wallet is a trap),
+   and re-importing the same config reuses its wallet without rescanning
+   again. Addresses import automatically, and when the node wallet has no
+   history yet a first-time blockchain rescan starts on its own with a
+   progress bar. The first scan takes minutes on Umbrel's node
+   (`blockfilterindex=1` is its default); Refresh/Import stay disabled until
+   it finishes, and reloading mid-scan resumes the progress display.
 
 Pointing Caravan at a different node, or debugging? See
 [Advanced: manual client configuration](#advanced-manual-client-configuration-non-umbrel-or-troubleshooting)

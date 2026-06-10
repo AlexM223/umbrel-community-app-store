@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-caravan
 category: bitcoin
 name: Caravan
-version: "1.19.4"
+version: "1.19.5"
 tagline: Stateless multisig coordinator for your Bitcoin node
 description: >-
   Caravan is a fully open-source, stateless Bitcoin multisig coordinator. Build
@@ -34,15 +34,19 @@ path: ""
 defaultUsername: ""
 defaultPassword: ""
 releaseNotes: >-
-  Zero-config node connection: wallet configs imported without client info
-  (e.g. exports from caravanmultisig.com) now connect to your node through
-  the built-in proxy automatically - no URLs or credentials to enter, just
-  click Confirm. The watch-only node wallet is created and loaded for you,
-  addresses import automatically after wallet confirm, and a first-time
-  blockchain rescan runs by itself with a progress bar. Also fixed: the
-  "invalid response" console spam, the UI crash during rescans, and a bug
-  where an imported config could keep a stale client's wallet name. The app
-  image is built on-device at install time from the git build context
+  Wallet isolation fix: each wallet config now gets its OWN watch-only node
+  wallet (caravan-<hash>, derived deterministically from the config) instead
+  of one shared wallet. Bitcoin Core cannot remove imported descriptors, so
+  the previous shared wallet accumulated addresses from every config you
+  tried - making one wallet's session show another wallet's
+  addresses/balances. Re-importing the same config reuses its wallet (no
+  repeat rescan); an explicit client.walletName is still honored. Node
+  wallets are also no longer touched until you click Confirm (connection
+  tests are reachability-only), and the confirm screen shows the node wallet
+  name with the option to edit it. Note: a previously-shared "caravan-main"
+  wallet on your node may contain mixed descriptors - unload it
+  (bitcoin-cli unloadwallet "caravan-main") if you used earlier versions.
+  The app image is built on-device at install time from
   https://github.com/AlexM223/caravan.git#umbrel.
 icon: https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/assets/images/caravan-logo-transparent.png
 submitter: Alex

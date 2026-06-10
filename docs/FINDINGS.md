@@ -220,11 +220,33 @@ error-surfacing foundation; node-wallet management in the clients package
 (`listwallets`/`createwallet`/`loadwallet` + scan status); Umbrel runtime
 config; zero-config client defaults; auto-import + auto-rescan.
 
-Considered and deliberately **not** done: per-wallet node wallets (one
-watch-only wallet per Caravan config instead of a shared `caravan-main`) and
-opt-in config persistence beyond sessionStorage — both add state and surface
-area without removing a user step from the happy path. Upstreaming the fixes
-to caravan-bitcoin/caravan remains on the table.
+Opt-in config persistence beyond sessionStorage was considered and not done.
+Upstreaming the fixes to caravan-bitcoin/caravan remains on the table.
+
+## Per-config node wallets (1.19.5) — a lesson
+
+1.19.3 deliberately shared one node wallet (`caravan-main`) across all
+configs "to keep state down." Real usage proved that wrong within hours:
+**Bitcoin Core has no descriptor-removal RPC**, so descriptors from every
+imported config accumulate in the shared wallet forever — importing wallet B
+after wallet A makes B's session report A's addresses and balances too
+(looks alarmingly like leaked key data; it's actually persisted watch-only
+state in the node's `wallets/caravan-main/wallet.dat`, surviving app
+reinstalls).
+
+1.19.5 therefore derives a wallet per config —
+`caravan-<first 8 hex of SHA-256(network, addressType, quorum, sorted
+xpubs)>` — so the same config always reuses its wallet (one rescan, ever)
+and different configs can never see each other. An explicit
+`client.walletName` is honored verbatim. Node side effects (create/load/
+import) also moved strictly to the Confirm click: connection tests are
+reachability-only (`estimatesmartfee`), and `ensureNodeWallet` throws if it
+runs before a name is set. The confirm screen displays the derived name in
+an editable field.
+
+Cleanup from the shared-wallet era is manual and deliberate (the app must
+never destroy node wallets): `unloadwallet "caravan-main"` via RPC, and
+optionally delete its directory from the Bitcoin app's data on disk.
 
 ## Verification performed
 
