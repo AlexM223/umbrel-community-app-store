@@ -29,7 +29,7 @@ developer: Caravan (Unchained / community)
 website: https://www.caravanmultisig.com
 dependencies:
   - bitcoin
-repo: http://umbrel.local:8085/caravan-store/caravan
+repo: https://github.com/AlexM223/caravan
 support: https://github.com/caravan-bitcoin/caravan/issues
 port: 4242
 gallery:
@@ -41,11 +41,10 @@ defaultUsername: ""
 defaultPassword: ""
 releaseNotes: >-
   Fix: the built-in /bitcoind proxy now serves both /bitcoind and /bitcoind/
-  directly. Previously the no-slash form returned a 308 redirect whose
-  Location header lost the :4242 port, stranding Caravan's "Test Connection"
-  on the dashboard port. (Upstream Caravan remains v1.19.1; this is a
-  packaging revision, rebuilt on-device from
-  http://umbrel.local:8085/caravan-store/caravan.git#umbrel commit f49be4d.)
+  directly (a 308 redirect previously lost the public port via nginx $host).
+  The app image is built on-device at install time from the git build context
+  https://github.com/AlexM223/caravan.git#umbrel (commit f49be4d; upstream
+  Caravan v1.19.1 plus Umbrel packaging).
 icon: https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/assets/images/caravan-logo-transparent.png
 submitter: Alex
-submission: http://umbrel.local:8085/caravan-store/umbrel-community-app-store
+submission: https://github.com/AlexM223/umbrel-community-app-store

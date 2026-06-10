@@ -9,7 +9,7 @@ services:
 
   web:
     build:
-      context: http://umbrel.local:8085/caravan-store/caravan.git#umbrel
+      context: https://github.com/AlexM223/caravan.git#umbrel
       dockerfile: apps/coordinator/Dockerfile.umbrel
     restart: on-failure
     environment:
