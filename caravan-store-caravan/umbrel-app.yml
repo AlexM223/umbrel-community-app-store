@@ -1,0 +1,49 @@
+manifestVersion: 1
+id: caravan-store-caravan
+category: bitcoin
+name: Caravan
+version: "1.19.1"
+tagline: Stateless multisig coordinator for your Bitcoin node
+description: >-
+  Caravan is a fully open-source, stateless Bitcoin multisig coordinator. Build
+  and manage multisig wallets (2-of-3, 3-of-5, ...), coordinate PSBTs, and use
+  hardware wallets - without storing any keys.
+
+  This build is wired to YOUR Umbrel Bitcoin node:
+
+  1. Open Caravan and go to a wallet's client settings.
+
+  2. Choose "Private Node".
+
+  3. URL: http://umbrel.local:4242/bitcoind
+
+  4. Username/password: enter anything non-empty. The app's built-in proxy
+  signs requests to your node with its real RPC credentials server-side, so
+  you never have to copy them.
+
+  Note: the proxy is reachable by anyone on your local network and forwards
+  authenticated RPC to your node (same trust model as your node's LAN-exposed
+  RPC port). Caravan may create a watch-only wallet on the node for address
+  tracking; this never holds private keys.
+developer: Caravan (Unchained / community)
+website: https://www.caravanmultisig.com
+dependencies:
+  - bitcoin
+repo: http://umbrel.local:8085/caravan-store/caravan
+support: https://github.com/caravan-bitcoin/caravan/issues
+port: 4242
+gallery:
+  - https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/apps/coordinator/public/images/landing/caravan-balance.webp
+  - https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/apps/coordinator/public/images/landing/xpubs.webp
+  - https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/apps/coordinator/public/images/landing/stateless.webp
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+releaseNotes: >-
+  First Gitea-hosted development release. The app image is not pulled from a
+  registry - it is built on-device at install time from the git build context
+  http://umbrel.local:8085/caravan-store/caravan.git#umbrel (umbrel branch of
+  the local Caravan fork).
+icon: https://raw.githubusercontent.com/caravan-bitcoin/caravan/main/assets/images/caravan-logo-transparent.png
+submitter: Alex
+submission: http://umbrel.local:8085/caravan-store/umbrel-community-app-store
