@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: caravan-store-raffle-pool_pool_1
+      APP_PORT: 13380
+      PROXY_AUTH_ADD: "false"
+
+  pool:
+    build:
+      context: http://umbrel.local:8085/caravan-store/raffle-pool.git#master
+      dockerfile: Dockerfile.umbrel
+    restart: on-failure
+    stop_grace_period: 30s
+    ports:
+      - "13333:13333/tcp"
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    environment:
+      DATA_DIR: /data
+      NETWORK: regtest
+      STRATUM_PORT: "13333"
+      STRATUM_HOST: "0.0.0.0"
+      STATUS_PORT: "13380"
+      SHARE_DIFF: "0.0005"
+      VARDIFF_TARGET_PER_MIN: "12"
+      POLICY_SHIFT: "6"

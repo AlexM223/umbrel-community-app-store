@@ -1,0 +1,39 @@
+manifestVersion: 1
+id: caravan-store-raffle-pool
+category: bitcoin
+name: Raffle Pool
+version: "0.1.0"
+tagline: Provably-fair raffle mining pool for your regtest node
+description: >-
+  A Bitcoin mining pool where every accepted share buys draw odds proportional
+  to its difficulty, and every block the pool finds pays 30 tiered winners
+  directly in the coinbase — GRAND (50%), 4× MAJOR (7.5% each), 25× FIELD.
+  The draw is committed on-chain (Merkle root in an OP_RETURN) BEFORE its seed
+  block exists, so the operator cannot grind outcomes, and any draw can be
+  independently verified from chain data alone.
+
+  This build connects to the Bitcoin Regtest Dashboard app's node — install
+  and start that app first. Point any miner (Bitaxe, cpuminer, the bundled
+  simulator) at umbrel.local:13333 with a regtest address as the username,
+  e.g. an address from the Regtest Dashboard's wallet. Real per-connection
+  vardiff adjusts difficulty to your hardware automatically.
+
+  Trust model: the status page and stratum port answer on your LAN without
+  authentication (regtest playground). Payout math is validated by a seeded
+  statistical battery and an always-on chain auditor in the source repo.
+developer: Alex
+website: http://umbrel.local:8085/caravan-store/raffle-pool
+dependencies: []
+repo: http://umbrel.local:8085/caravan-store/raffle-pool
+support: http://umbrel.local:8085/caravan-store/raffle-pool/issues
+port: 13380
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+releaseNotes: >-
+  First packaged release: raffle engine + Stratum V1 server with vardiff,
+  commit-before-seed draws, persistent round records, status page.
+icon: http://umbrel.local:8085/caravan-store/raffle-pool/raw/branch/master/umbrel/icon.svg
+submitter: Alex
+submission: http://umbrel.local:8085/caravan-store/umbrel-community-app-store
