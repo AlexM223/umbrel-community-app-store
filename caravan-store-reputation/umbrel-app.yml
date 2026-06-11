@@ -1,0 +1,47 @@
+manifestVersion: 1
+id: caravan-store-reputation
+category: bitcoin
+name: Wallet Reputation
+version: "0.1.0"
+tagline: Score a Bitcoin wallet's on-chain reputation from 0 to 1000
+description: >-
+  Wallet Reputation scores any Bitcoin wallet on a counterparty-trust lens and
+  produces a 0-1000 score with a Bronze / Silver / Gold / Platinum tier - using
+  a fully published, explainable formula.
+
+  Three things drive the score: longevity (how long the wallet has been active,
+  the depth of its payment history, and total value settled), fund-management
+  hygiene (clean UTXO set, diverse funding sources, modern address types), and
+  the confidence of its funding provenance. Paste an address, an xpub, or an
+  output descriptor and get a transparent report you can act on.
+
+  This is the inverse of a privacy score: it answers "how well-established and
+  trustworthy does this wallet look to a counterparty?", not "how exposed are
+  you?". The wallet reputation report lives at the /reputation page; the
+  underlying am-i-exposed privacy scanner is included too.
+
+  When running on Umbrel, all blockchain queries route through your local
+  mempool instance - private and unmetered. Runs 100% locally: no accounts, no
+  tracking, nothing stored.
+
+  Note: the app is reachable by anyone on your local network (no app login).
+developer: Alex
+website: https://github.com/Copexit/am-i-exposed
+dependencies:
+  - mempool
+repo: http://umbrel.local:8085/caravan-store/reputation-scanner
+support: http://umbrel.local:8085/caravan-store/reputation-scanner/issues
+port: 4126
+gallery:
+  - https://raw.githubusercontent.com/Copexit/am-i-exposed/main/public/icon-512.png
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+releaseNotes: >-
+  First test build of the Wallet Reputation scanner for Umbrel. Adds the
+  /reputation report (0-1000 score, Bronze-to-Platinum tiers) alongside the
+  privacy scanner, served from your local mempool. Built on-device from
+  http://umbrel.local:8085/caravan-store/reputation-scanner.git#main.
+icon: https://raw.githubusercontent.com/Copexit/am-i-exposed/main/public/icon-512.png
+submitter: Alex
+submission: https://github.com/AlexM223/umbrel-community-app-store
