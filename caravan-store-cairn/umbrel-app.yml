@@ -24,10 +24,20 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Fixes Umbrel's dashboard login wall intercepting requests to Cairn.
-  Cairn has its own login, so this was redundant and, for some users,
-  blocked reaching the Cairn sign-in page at all. Compose-only change —
-  no app code changes, no data changes, safe update from 0.1.1.
+  Fixes the add-wallet wizard losing your place on Umbrel: pasting an
+  xpub, confirming the derived addresses, and then being thrown back to
+  the "choose your method" step. The wizard now saves your progress and
+  picks up where you left off if the page reloads mid-setup.
+
+
+  Also stops Umbrel's dashboard login wall from intercepting requests to
+  Cairn — the cause of those mid-wizard resets. Cairn has its own login,
+  so the extra wall was redundant and, for some users, blocked reaching
+  the Cairn sign-in page at all.
+
+
+  No data changes — safe update from 0.1.1. Full notes:
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.2
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn

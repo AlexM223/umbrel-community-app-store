@@ -6,7 +6,7 @@ services:
       PROXY_AUTH_ADD: "false"
 
   web:
-    image: ghcr.io/alexm223/cairn:0.1.1@sha256:b7c47391ed7e91284eb423f156188f7cd48f27582eb5cee253745d4369b0d932
+    image: ghcr.io/alexm223/cairn:0.1.2@sha256:b9098f80ca6753ad5e0fe9fbfbd502265531030b9a07fc640cc1d41a25bd0f00
     restart: on-failure
     user: "1000:1000"
     environment:
