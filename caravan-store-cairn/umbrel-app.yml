@@ -27,7 +27,9 @@ releaseNotes: >-
   Fixes sign-in on Umbrel: the session cookie was marked Secure behind
   Umbrel's plain-HTTP proxy, so browsers dropped it and the login page
   silently reloaded. Also fixes form submissions being rejected as
-  cross-site for the same reason.
+  cross-site for the same reason. No data changes — safe update from
+  0.1.0. Full notes:
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.1
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
