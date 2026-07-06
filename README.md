@@ -1,10 +1,15 @@
 # Caravan Store
 
 An [Umbrel community app store](https://github.com/getumbrel/umbrel-community-app-store)
-that packages [Caravan](https://github.com/caravan-bitcoin/caravan) — the
-stateless Bitcoin multisig coordinator — as an Umbrel app wired to **your own
-Bitcoin node**, with no public Docker registry involved: the image is built
-on your Umbrel, from source, at install time.
+with two Bitcoin apps:
+
+- [Caravan](https://github.com/caravan-bitcoin/caravan) — the stateless
+  Bitcoin multisig coordinator — as an Umbrel app wired to **your own
+  Bitcoin node**, with no public Docker registry involved: the image is
+  built on your Umbrel, from source, at install time.
+- [Cairn](https://github.com/AlexM223/cairn) — a self-hosted Bitcoin command
+  center: watch-only wallet navigator, block explorer, and multisig
+  coordinator, installed from a prebuilt multi-arch image.
 
 ## Add this store to your Umbrel
 
@@ -23,6 +28,12 @@ updates and reinstalls are much faster thanks to Docker layer caching.
 - **Caravan** (`caravan-store-caravan`) — stateless multisig coordinator on
   port `4242`. Depends on the official **Bitcoin** app (Umbrel installs it
   first and injects its RPC credentials into the app's environment).
+- **Cairn** (`caravan-store-cairn`) — self-hosted Bitcoin command center on
+  port `3211`. No dependencies — it defaults to a public Electrum server,
+  swappable for your own (e.g. the electrs app) from Admin → Settings.
+  First login: `admin@cairn.local` with the password shown on the app's
+  install card; change it (and set your real email) from Settings. All app
+  state lives in the app's data directory and survives updates/restarts.
 
 ## Connecting Caravan to your node
 

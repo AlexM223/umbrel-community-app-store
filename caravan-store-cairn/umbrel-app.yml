@@ -1,0 +1,51 @@
+manifestVersion: 1
+id: caravan-store-cairn
+category: bitcoin
+name: Cairn
+version: "0.1.0"
+tagline: Self-hosted Bitcoin command center
+description: >-
+  Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
+  explorer you run yourself. It never touches your private keys — signing
+  happens on your hardware wallet (Trezor, Ledger, BitBox02, Jade, Coldcard)
+  or is coordinated as a multisig quorum.
+
+
+  Log in with the email and password shown after install, then change the
+  password (and set your real email address, so notifications reach you)
+  from Settings.
+
+
+  Works out of the box against a public Electrum server; point it at your
+  own Electrum server (e.g. the electrs app) from Admin → Settings for full
+  self-sovereignty.
+
+
+  Passkey login requires HTTPS — on Umbrel's default .local address, use
+  password login.
+releaseNotes: ""
+
+developer: Alex Martinez
+website: https://github.com/AlexM223/cairn
+dependencies: []
+repo: https://github.com/AlexM223/cairn
+support: https://github.com/AlexM223/cairn/issues
+
+port: 3211
+gallery:
+  - https://raw.githubusercontent.com/AlexM223/cairn/main/docs/screenshots/dashboard.png
+  - https://raw.githubusercontent.com/AlexM223/cairn/main/docs/screenshots/wallets.png
+  - https://raw.githubusercontent.com/AlexM223/cairn/main/docs/screenshots/multisig-wallet.png
+  - https://raw.githubusercontent.com/AlexM223/cairn/main/docs/screenshots/send-review.png
+path: ""
+icon: https://raw.githubusercontent.com/AlexM223/cairn/main/src/lib/assets/favicon.svg
+
+defaultUsername: admin@cairn.local
+deterministicPassword: true
+defaultPassword: ""
+
+backupIgnore:
+  - data/logs/*
+
+submitter: Alex Martinez
+submission: https://github.com/AlexM223/umbrel-community-app-store

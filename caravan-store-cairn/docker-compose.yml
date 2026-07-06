@@ -1,0 +1,22 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: caravan-store-cairn_web_1
+      APP_PORT: 3000
+
+  web:
+    image: ghcr.io/alexm223/cairn:0.1.0@sha256:9979693a4e25278b425a49754ece65c21dea7f55a8ea818f29ebc1f286c096a0
+    restart: on-failure
+    user: "1000:1000"
+    environment:
+      # app_proxy sets/overwrites X-Forwarded-For, so it is safe to trust here.
+      ADDRESS_HEADER: x-forwarded-for
+      # Absolute origin used in notification email links and as the WebAuthn
+      # origin fallback — declare it rather than trusting per-request headers.
+      CAIRN_ORIGIN: "http://${DEVICE_DOMAIN_NAME}:${APP_PROXY_PORT}"
+      # First-boot admin bootstrap: creates admin@cairn.local with Umbrel's
+      # per-install derived password (shown in the Umbrel UI via
+      # deterministicPassword). Never overwrites a password the user changed.
+      CAIRN_ADMIN_PASSWORD: ${APP_PASSWORD}
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
