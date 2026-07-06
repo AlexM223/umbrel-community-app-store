@@ -3,6 +3,7 @@ services:
     environment:
       APP_HOST: caravan-store-cairn_web_1
       APP_PORT: 3000
+      PROXY_AUTH_ADD: "false"
 
   web:
     image: ghcr.io/alexm223/cairn:0.1.1@sha256:b7c47391ed7e91284eb423f156188f7cd48f27582eb5cee253745d4369b0d932
