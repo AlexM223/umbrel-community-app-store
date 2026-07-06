@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.0"
+version: "0.1.1"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -23,7 +23,11 @@ description: >-
 
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
-releaseNotes: ""
+releaseNotes: >-
+  Fixes sign-in on Umbrel: the session cookie was marked Secure behind
+  Umbrel's plain-HTTP proxy, so browsers dropped it and the login page
+  silently reloaded. Also fixes form submissions being rejected as
+  cross-site for the same reason.
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
