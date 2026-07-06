@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.2"
+version: "0.1.3"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,20 +24,22 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Fixes the add-wallet wizard losing your place on Umbrel: pasting an
-  xpub, confirming the derived addresses, and then being thrown back to
-  the "choose your method" step. The wizard now saves your progress and
-  picks up where you left off if the page reloads mid-setup.
+  Imported wallets now chart their balance history from day one — the
+  "Balance over time" chart is filled in from the wallet's existing
+  transactions instead of starting empty. Creating or importing a wallet
+  now shows up in your activity feed and the admin log. And if a login
+  succeeds but your browser can't keep the session cookie, the sign-in
+  page says so clearly instead of silently reloading.
 
 
-  Also stops Umbrel's dashboard login wall from intercepting requests to
-  Cairn — the cause of those mid-wizard resets. Cairn has its own login,
-  so the extra wall was redundant and, for some users, blocked reaching
-  the Cairn sign-in page at all.
+  Also includes 0.1.2's fixes if you're updating straight from 0.1.1:
+  the add-wallet wizard no longer loses its place when the page reloads
+  mid-setup, and Umbrel's dashboard login wall no longer intercepts
+  Cairn (it has its own login).
 
 
-  No data changes — safe update from 0.1.1. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.2
+  No data changes — safe update from 0.1.2 or 0.1.1. Full notes:
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.3
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
