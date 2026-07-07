@@ -95,13 +95,14 @@ an install builds until this repo says so.
 
 ## Security model (read this once)
 
-- The app sits behind Umbrel's `app_proxy` with `PROXY_AUTH_ADD: "false"`
-  (like the Gitea app), so `http://umbrel.local:4242` is reachable by anyone
-  on your LAN.
-- The `/bitcoind` proxy **injects authenticated RPC** — anyone on your LAN can
-  query your node through it without credentials. This is the same trust class
-  as the node's own LAN-exposed RPC port, but it removes the password gate.
-  Don't port-forward 4242, and treat your LAN as the security boundary.
+- The app sits behind Umbrel's `app_proxy` **with the standard Umbrel auth
+  wall** (since 1.19.7): `http://umbrel.local:4242` requires a signed-in
+  Umbrel dashboard session. Versions up to 1.19.6 disabled the wall, leaving
+  the app — and the RPC proxy below — reachable by anyone on the LAN.
+- The `/bitcoind` proxy **injects authenticated RPC** server-side, so the
+  browser never sees node credentials. Behind the auth wall, only a
+  signed-in Umbrel user can query your node through it. Still don't
+  port-forward 4242.
 - The watch-only wallet contains public keys only; nothing in this stack can
   spend funds. Spending requires your hardware-wallet signatures, as always
   with Caravan.
@@ -118,13 +119,21 @@ The zero-config flow above covers normal use. The manual steps it replaced
 are kept here for pointing Caravan at a non-Umbrel node, or for
 troubleshooting by hand.
 
-1. Create a watch-only wallet on your node (one-time, holds no keys). From any
-   machine on your LAN:
+1. Create a watch-only wallet on your node (one-time, holds no keys). Since
+   1.19.7 the app sits behind the Umbrel login, so run this from the browser
+   devtools console **on the Caravan page itself** (same-origin, carries your
+   session):
 
-   ```sh
-   curl -X POST http://umbrel.local:4242/bitcoind/ \
-     -d '{"jsonrpc":"1.0","id":"1","method":"createwallet","params":{"wallet_name":"caravan-main","disable_private_keys":true,"blank":true,"load_on_startup":true}}'
+   ```js
+   fetch("/bitcoind/", { method: "POST", body: JSON.stringify({
+     jsonrpc: "1.0", id: "1", method: "createwallet",
+     params: { wallet_name: "caravan-main", disable_private_keys: true,
+               blank: true, load_on_startup: true }
+   })}).then(r => r.json()).then(console.log)
    ```
+
+   (On a non-Umbrel deployment without the auth wall, the equivalent
+   `curl -X POST http://<host>/bitcoind/ -d '<same JSON>'` still works.)
 
 2. In Caravan (wallet import screen or your wallet-config JSON), set the client to:
 

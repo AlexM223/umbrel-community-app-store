@@ -5,13 +5,13 @@ services:
     environment:
       APP_HOST: caravan-store-caravan_web_1
       APP_PORT: 80
-      PROXY_AUTH_ADD: "false"
 
   web:
     build:
-      # Pinned commit on the fork's `umbrel` branch (1.19.6). Bump this SHA
-      # together with the manifest version on every release so an install
-      # always builds exactly the code the version claims.
+      # Pinned commit on the fork's `umbrel` branch (app code 1.19.6; the
+      # 1.19.7 manifest is a packaging-only release). Bump this SHA together
+      # with the manifest version whenever the app code changes so an
+      # install always builds exactly the code the version claims.
       context: https://github.com/AlexM223/caravan.git#a534cdc1db7c88e070d0ba6b2b7ebfb741a8b2bc
       dockerfile: apps/coordinator/Dockerfile.umbrel
     restart: on-failure

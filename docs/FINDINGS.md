@@ -164,6 +164,10 @@ browser (request/console capture) and by direct RPC probes through the proxy.
   `curl -X POST http://umbrel.local:4242/bitcoind/ -d '{"jsonrpc":"1.0","id":"x","method":"getblockchaininfo","params":[]}'`
   (root path) and `/bitcoind/wallet/<name>` (wallet path, e.g.
   `getwalletinfo` shows `scanning` progress during a rescan).
+  *Since 1.19.7 the app sits behind the Umbrel auth wall, so bare `curl`
+  gets redirected to the dashboard login — run the same RPC as a `fetch()`
+  from the browser devtools console on the Caravan page instead (the README's
+  Advanced section has a copy-paste snippet).*
 - **UI dead during rescan**: upstream v1.19.1 behavior (quirk 5; the 1.19.3
   fork shows a progress bar instead). On the old build, wait for
   `"scanning": false`, then reload — a same-tab reload restores the config
