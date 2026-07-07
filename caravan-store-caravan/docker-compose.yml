@@ -9,7 +9,10 @@ services:
 
   web:
     build:
-      context: https://github.com/AlexM223/caravan.git#umbrel
+      # Pinned commit on the fork's `umbrel` branch (1.19.6). Bump this SHA
+      # together with the manifest version on every release so an install
+      # always builds exactly the code the version claims.
+      context: https://github.com/AlexM223/caravan.git#a534cdc1db7c88e070d0ba6b2b7ebfb741a8b2bc
       dockerfile: apps/coordinator/Dockerfile.umbrel
     restart: on-failure
     environment:

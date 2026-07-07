@@ -69,24 +69,28 @@ at the end of this README.
 ## How the build works
 
 The `web` service in `caravan-store-caravan/docker-compose.yml` uses a **git
-build context**:
+build context pinned to a commit** on the Caravan fork's `umbrel` branch:
 
 ```
-https://github.com/AlexM223/caravan.git#umbrel
+https://github.com/AlexM223/caravan.git#<commit-sha>
 ```
 
-At install time the Umbrel clones the `umbrel` branch of the Caravan fork and
-builds `apps/coordinator/Dockerfile.umbrel` on-device (the official multi-stage
+At install time the Umbrel fetches that exact commit and builds
+`apps/coordinator/Dockerfile.umbrel` on-device (the official multi-stage
 build plus a small nginx layer for the node proxy). No registry, no insecure
-Docker config, no SSH onto the device — git build contexts work out of the box.
+Docker config, no SSH onto the device — git build contexts work out of the
+box. Pinning the SHA (rather than the branch name) means each store version
+builds exactly the code it claims: a push to the fork can never change what
+an install builds until this repo says so.
 
 ## Dev loop
 
 1. Edit the Caravan fork, commit to its `umbrel` branch, push.
-2. If store files changed, bump `version:` in `caravan-store-caravan/umbrel-app.yml`
-   and push this repo.
+2. Point the build context at the new commit: update the pinned SHA in
+   `caravan-store-caravan/docker-compose.yml`, bump `version:` in
+   `caravan-store-caravan/umbrel-app.yml`, and push this repo.
 3. On the Umbrel: apply the app update (or uninstall → reinstall). Updates
-   re-clone the build context and rebuild — cached layers make source-only
+   fetch the pinned commit and rebuild — cached layers make source-only
    changes quick.
 
 ## Security model (read this once)
