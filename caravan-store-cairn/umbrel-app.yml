@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.7"
+version: "0.1.8"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,23 +24,29 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Fixes the secure address (https://umbrel.local:3212) sometimes appearing
-  dead right after an update or restart. The page could show an empty-response
-  error while Cairn was still starting up; now it answers immediately with a
-  "starting up" page that refreshes itself and hands over to the app within
-  seconds.
+  The secure address (https://umbrel.local:3212) now opens itself: once
+  you've accepted its certificate, any page you open on the regular address
+  quietly continues on the secure one — signed in, same page, hardware
+  signing and camera scanning ready. First-time visitors still get the
+  guided walkthrough, and signing in directly on the secure address (which
+  could show a server error before) now works.
 
 
-  The secure address's certificate is also generated to modern standards now
-  (browsers were rejecting the old signature format, and it can be permanently
-  trusted on Apple devices if you want to silence the warning for good). Your
-  existing certificate is replaced automatically the first time the updated
-  app starts, so expect one fresh "connection is not private" browser warning
-  after this update — accept it once and you're set.
+  The secure address also no longer appears dead right after an update or
+  restart — it answers immediately with a "starting up" page that hands
+  over to the app within seconds. Its certificate is generated to modern
+  standards now and replaced automatically on first start, so expect one
+  fresh "connection is not private" browser warning after this update;
+  accept it once and you're set.
+
+
+  Adding a wallet is three steps instead of six: paste (or read) your key,
+  check the addresses, name it — done. Pasted keys are no longer asked
+  which device holds them; you pick how to sign when you actually send.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.7
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.8
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
