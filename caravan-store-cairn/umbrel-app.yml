@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.5"
+version: "0.1.6"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,35 +24,29 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Hardware wallet signing (Trezor, Ledger, BitBox02, Jade) is fixed —
-  previously-created watch-only wallets silently couldn't complete a signed
-  transaction; this release makes new wallets work correctly and is a
-  prerequisite for existing wallets to sign (re-add the wallet if you
-  created it before this update).
+  Hardware wallet signing now works from your browser. Ledger, BitBox02,
+  and Jade USB signing (plus camera QR scanning) need a secure connection,
+  which Umbrel's regular http:// address can't provide — so Cairn now
+  serves its own secure address at https://umbrel.local:3212, and every
+  signing screen links you there when it's needed.
 
 
-  Multisig vaults you're building with other people now get a dedicated
-  "shared with others" option that derives keys the industry-standard way
-  for collaborative custody, plus stricter checks that catch a wrongly-typed
-  key before it's added to a vault.
+  Your browser will warn about the self-signed certificate the first time
+  (and again roughly weekly — that's normal, the app walks you through it).
+  Sign in with your password on the secure address; passkeys don't work
+  there.
 
 
-  New: personal access tokens (Settings → API access) for scripting against
-  your own instance, an in-app update notice, opt-in scheduled encrypted
-  backups, and Cairn can now be installed to your phone's home screen.
+  Trezor — and BitBox02, if you have the BitBoxBridge app installed on
+  your computer — can now also connect on the regular address.
 
 
-  First login now walks a freshly-installed admin through setting a real
-  password and email, instead of expecting you to remember to do it from
-  Settings.
-
-
-  Dashboard, wallets, and explorer pages load noticeably faster, and a
-  connection-drop notification flood some users hit is fixed.
+  Also fixed: the wallet-setup wizard no longer shows a link that could
+  accidentally exit setup partway through.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.5
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.6
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn

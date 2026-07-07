@@ -6,9 +6,17 @@ services:
       PROXY_AUTH_ADD: "false"
 
   web:
-    image: ghcr.io/alexm223/cairn:0.1.5@sha256:5feb565dde7c1649396e763db374e2aa0e9fbad993983aa43677bfe909e1747c
+    image: ghcr.io/alexm223/cairn:0.1.6@sha256:616ea083129a57261911d30550db34516163d1342416231dbdbaf188c46aeedb
     restart: on-failure
     user: "1000:1000"
+    ports:
+      # Cairn's own self-signed HTTPS listener (cairn-wgr8), bypassing
+      # app_proxy: https://umbrel.local:3212 is a browser "secure context", so
+      # WebHID/Web Serial hardware signing and camera QR scanning work there —
+      # plain-HTTP app_proxy access can't offer them. The cert is generated at
+      # first boot into the app's data volume; browsers warn once (self-signed)
+      # and the in-app help walks the user through it.
+      - "3212:3443"
     environment:
       # app_proxy sets/overwrites X-Forwarded-For, so it is safe to trust here.
       ADDRESS_HEADER: x-forwarded-for
@@ -24,5 +32,8 @@ services:
       # per-install derived password (shown in the Umbrel UI via
       # deterministicPassword). Never overwrites a password the user changed.
       CAIRN_ADMIN_PASSWORD: ${APP_PASSWORD}
+      # The HTTPS listener's host-visible port (the 3212 side of the ports
+      # mapping above) — what the app's "open the secure address" links use.
+      CAIRN_HTTPS_EXTERNAL_PORT: "3212"
     volumes:
       - ${APP_DATA_DIR}/data:/data
