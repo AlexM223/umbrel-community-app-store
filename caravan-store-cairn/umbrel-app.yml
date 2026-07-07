@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.4"
+version: "0.1.5"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -11,9 +11,9 @@ description: >-
   or is coordinated as a multisig quorum.
 
 
-  Log in with the email and password shown after install, then change the
-  password (and set your real email address, so notifications reach you)
-  from Settings.
+  Log in with the email and password shown after install — you'll be asked
+  to set your own password and a real email address (so notifications can
+  reach you) the first time you sign in.
 
 
   Works out of the box against a public Electrum server; point it at your
@@ -24,15 +24,35 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  The "click to copy" buttons — receive addresses, invite codes, recovery
-  phrases, raw transactions — now work on Umbrel's standard http://
-  umbrel.local address. Browsers only allow the modern clipboard API over
-  HTTPS, so copying silently did nothing before; Cairn now falls back to
-  a method that works over plain HTTP.
+  Hardware wallet signing (Trezor, Ledger, BitBox02, Jade) is fixed —
+  previously-created watch-only wallets silently couldn't complete a signed
+  transaction; this release makes new wallets work correctly and is a
+  prerequisite for existing wallets to sign (re-add the wallet if you
+  created it before this update).
+
+
+  Multisig vaults you're building with other people now get a dedicated
+  "shared with others" option that derives keys the industry-standard way
+  for collaborative custody, plus stricter checks that catch a wrongly-typed
+  key before it's added to a vault.
+
+
+  New: personal access tokens (Settings → API access) for scripting against
+  your own instance, an in-app update notice, opt-in scheduled encrypted
+  backups, and Cairn can now be installed to your phone's home screen.
+
+
+  First login now walks a freshly-installed admin through setting a real
+  password and email, instead of expecting you to remember to do it from
+  Settings.
+
+
+  Dashboard, wallets, and explorer pages load noticeably faster, and a
+  connection-drop notification flood some users hit is fixed.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.4
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.5
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
