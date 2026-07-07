@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.0"
+version: "0.2.1"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,21 +24,20 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Mempool fee histogram and transaction hex now sourced directly from
-  Electrum instead of esplora — faster and more reliable on self-hosted
-  setups. Explorer and admin pages stream SSR loads instead of blocking,
-  so pages render progressively. First-sync is now non-blocking: a
-  dismissible banner replaces the old gate page, so you can explore
-  immediately while the node catches up.
+  Wallet and send pages now stream SSR loads instead of blocking — pages
+  render progressively and feel faster, especially on slower Electrum
+  connections (single-sig and multisig). Tip height and fee estimates are
+  TTL-cached so repeat page loads skip redundant Electrum queries.
 
 
-  Also: notification panel truncation and z-index fixes, all remaining
-  "Cairn" strings replaced with "Heartwood" in emails and backup PDFs,
-  and inert Bitcoin Core RPC fields hidden from admin settings.
+  Also: balance chart now has proper axes, gridlines, and hover tooltips;
+  wizard browser-back navigates steps instead of exiting; chain health
+  banner surfaces transport errors; receive-address rotation no longer
+  forces a full rescan; and several QA polish fixes.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.0
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.1
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
