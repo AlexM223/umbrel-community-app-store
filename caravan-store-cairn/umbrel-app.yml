@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.6"
+version: "0.1.7"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,29 +24,23 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Hardware wallet signing now works from your browser. Ledger, BitBox02,
-  and Jade USB signing (plus camera QR scanning) need a secure connection,
-  which Umbrel's regular http:// address can't provide — so Cairn now
-  serves its own secure address at https://umbrel.local:3212, and every
-  signing screen links you there when it's needed.
+  Fixes the secure address (https://umbrel.local:3212) sometimes appearing
+  dead right after an update or restart. The page could show an empty-response
+  error while Cairn was still starting up; now it answers immediately with a
+  "starting up" page that refreshes itself and hands over to the app within
+  seconds.
 
 
-  Your browser will warn about the self-signed certificate the first time
-  (and again roughly weekly — that's normal, the app walks you through it).
-  Sign in with your password on the secure address; passkeys don't work
-  there.
-
-
-  Trezor — and BitBox02, if you have the BitBoxBridge app installed on
-  your computer — can now also connect on the regular address.
-
-
-  Also fixed: the wallet-setup wizard no longer shows a link that could
-  accidentally exit setup partway through.
+  The secure address's certificate is also generated to modern standards now
+  (browsers were rejecting the old signature format, and it can be permanently
+  trusted on Apple devices if you want to silence the warning for good). Your
+  existing certificate is replaced automatically the first time the updated
+  app starts, so expect one fresh "connection is not private" browser warning
+  after this update — accept it once and you're set.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.6
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.7
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
