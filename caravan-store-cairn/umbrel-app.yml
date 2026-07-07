@@ -1,11 +1,11 @@
 manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
-name: Cairn
-version: "0.1.9"
+name: Heartwood
+version: "0.2.0"
 tagline: Self-hosted Bitcoin command center
 description: >-
-  Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
+  Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
   explorer you run yourself. It never touches your private keys — signing
   happens on your hardware wallet (Trezor, Ledger, BitBox02, Jade, Coldcard)
   or is coordinated as a multisig quorum.
@@ -24,25 +24,21 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  A full visual redesign, inside the app: Cairn now goes by "Heartwood" on
-  every screen, with a new dark copper-and-ring design built around growth
-  rings — confirmations, node sync, block history, and multisig quorum all
-  read as rings, arcs, or dials now instead of badges and bars. Every page
-  (send, sign, receive, wallets, explorer, activity, admin, settings) has
-  been rebuilt, on both desktop and phone widths.
+  Mempool fee histogram and transaction hex now sourced directly from
+  Electrum instead of esplora — faster and more reliable on self-hosted
+  setups. Explorer and admin pages stream SSR loads instead of blocking,
+  so pages render progressively. First-sync is now non-blocking: a
+  dismissible banner replaces the old gate page, so you can explore
+  immediately while the node catches up.
 
 
-  A new first-run screen shows your node catching up ring by ring, with a
-  short historical note for each year as it verifies.
-
-
-  Nothing about how the app talks to your node, your hardware wallet, or
-  your keys has changed — this is a visual and in-app naming update only.
-  This Umbrel listing, its app ID, and your data are unaffected.
+  Also: notification panel truncation and z-index fixes, all remaining
+  "Cairn" strings replaced with "Heartwood" in emails and backup PDFs,
+  and inert Bitcoin Core RPC fields hidden from admin settings.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.9
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.0
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
