@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Cairn
-version: "0.1.8"
+version: "0.1.9"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Cairn is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,29 +24,25 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  The secure address (https://umbrel.local:3212) now opens itself: once
-  you've accepted its certificate, any page you open on the regular address
-  quietly continues on the secure one — signed in, same page, hardware
-  signing and camera scanning ready. First-time visitors still get the
-  guided walkthrough, and signing in directly on the secure address (which
-  could show a server error before) now works.
+  A full visual redesign, inside the app: Cairn now goes by "Heartwood" on
+  every screen, with a new dark copper-and-ring design built around growth
+  rings — confirmations, node sync, block history, and multisig quorum all
+  read as rings, arcs, or dials now instead of badges and bars. Every page
+  (send, sign, receive, wallets, explorer, activity, admin, settings) has
+  been rebuilt, on both desktop and phone widths.
 
 
-  The secure address also no longer appears dead right after an update or
-  restart — it answers immediately with a "starting up" page that hands
-  over to the app within seconds. Its certificate is generated to modern
-  standards now and replaced automatically on first start, so expect one
-  fresh "connection is not private" browser warning after this update;
-  accept it once and you're set.
+  A new first-run screen shows your node catching up ring by ring, with a
+  short historical note for each year as it verifies.
 
 
-  Adding a wallet is three steps instead of six: paste (or read) your key,
-  check the addresses, name it — done. Pasted keys are no longer asked
-  which device holds them; you pick how to sign when you actually send.
+  Nothing about how the app talks to your node, your hardware wallet, or
+  your keys has changed — this is a visual and in-app naming update only.
+  This Umbrel listing, its app ID, and your data are unaffected.
 
 
   No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.1.8
+  https://github.com/AlexM223/cairn/releases/tag/v0.1.9
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
