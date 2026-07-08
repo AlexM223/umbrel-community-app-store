@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.2"
+version: "0.2.3"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,24 +24,21 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Security: fixed an unauthenticated admin bypass (with a crash guard on the
-  affected path), added CSP/HSTS/X-Frame-Options response headers, removed a
-  passkey-reclaim account-takeover path in favor of a proper recovery-password
-  flow, and closed an open-redirect in login.
+  Fixed a bug introduced in 0.2.2 where the new security headers blocked the
+  app's own startup script, so pages could load but never become interactive.
+  The fix uses the browser's per-request nonce mechanism instead of a static
+  policy, closing the gap without weakening the protection.
 
 
-  Multisig: hardened cleanup so deleting a wallet or vault reliably clears its
-  backups/labels/notification state, fixed a BIP-48 P2SH derivation-path
-  mismatch, and extended "resume after reload" to the multisig setup wizard.
-
-
-  Also: hardware-signer calls now time out with a recoverable error instead of
-  hanging, several background-race fixes (broadcast/watcher), faster nav and
-  login, and a reliability pass on notifications and Electrum reconnects.
+  Perf: the navigation bar now caches its per-user data for a few seconds
+  instead of re-querying on every click (most noticeable on Umbrel's
+  Raspberry Pi hardware), and the transaction-detail and stateless-signer
+  pages load slightly faster by running their chain lookups in parallel
+  instead of one after another.
 
 
   No data migration — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.2
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.3
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
