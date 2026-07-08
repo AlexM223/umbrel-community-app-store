@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.1"
+version: "0.2.2"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,20 +24,24 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Wallet and send pages now stream SSR loads instead of blocking — pages
-  render progressively and feel faster, especially on slower Electrum
-  connections (single-sig and multisig). Tip height and fee estimates are
-  TTL-cached so repeat page loads skip redundant Electrum queries.
+  Security: fixed an unauthenticated admin bypass (with a crash guard on the
+  affected path), added CSP/HSTS/X-Frame-Options response headers, removed a
+  passkey-reclaim account-takeover path in favor of a proper recovery-password
+  flow, and closed an open-redirect in login.
 
 
-  Also: balance chart now has proper axes, gridlines, and hover tooltips;
-  wizard browser-back navigates steps instead of exiting; chain health
-  banner surfaces transport errors; receive-address rotation no longer
-  forces a full rescan; and several QA polish fixes.
+  Multisig: hardened cleanup so deleting a wallet or vault reliably clears its
+  backups/labels/notification state, fixed a BIP-48 P2SH derivation-path
+  mismatch, and extended "resume after reload" to the multisig setup wizard.
 
 
-  No data changes — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.1
+  Also: hardware-signer calls now time out with a recoverable error instead of
+  hanging, several background-race fixes (broadcast/watcher), faster nav and
+  login, and a reliability pass on notifications and Electrum reconnects.
+
+
+  No data migration — safe update from any earlier version. Full notes:
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.2
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
