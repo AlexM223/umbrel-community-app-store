@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.4"
+version: "0.2.5"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,42 +24,25 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  Fixed a bug introduced in 0.2.2 where the new security headers blocked the
-  app's own startup script, so pages could load but never become interactive.
-  The fix uses the browser's per-request nonce mechanism instead of a static
-  policy, closing the gap without weakening the protection.
+  Fixed the app feeling slow or unresponsive on Umbrel. Opening your wallet
+  list used to kick off a separate background check for every single wallet
+  all at once, which could overload the connection to your Bitcoin server and
+  make the whole app feel stuck. It now runs one coordinated check instead, so
+  things stay snappy no matter how many wallets you have.
 
 
-  Perf: the navigation bar now caches its per-user data for a few seconds
-  instead of re-querying on every click (most noticeable on Umbrel's
-  Raspberry Pi hardware), and the transaction-detail and stateless-signer
-  pages load slightly faster by running their chain lookups in parallel
-  instead of one after another.
+  Fixed a bug where, if that first check happened to fail, your balance could
+  briefly flash as zero instead of showing that it was still syncing — an
+  alarming thing to see on a Bitcoin wallet, and now it correctly shows the
+  syncing state.
 
 
-  Pages now open instantly. Your wallet, dashboard, and explorer show your
-  last-known balances and data right away from a local cache, with a small
-  "last synced" note, and quietly refresh in the background — no more waiting
-  on the Bitcoin server every time you open a page. Sending a transaction still
-  always uses fresh, up-to-the-second data, so nothing changes there.
-
-
-  We fixed a bug where tapping "bump fee" twice in quick succession could send
-  out two competing replacement transactions instead of one, and added extra
-  checks so a fee-bump can't race itself.
-
-
-  The difficulty and mempool charts now have proper axes and hover details
-  instead of plain bars, so they're easier to read at a glance.
-
-
-  We also tightened security around the outbound connections the app makes
-  (the URLs used for notifications and relays are now validated), and finished
-  off the last few visual-polish spots from the Heartwood redesign.
+  Opening a transaction from the block explorer no longer hangs if the server
+  is slow to respond.
 
 
   No data migration — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.4
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.5
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
