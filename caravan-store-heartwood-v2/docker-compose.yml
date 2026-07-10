@@ -1,7 +1,7 @@
 services:
   app_proxy:
     environment:
-      APP_HOST: heartwood-v2_gateway_1
+      APP_HOST: caravan-store-heartwood-v2_gateway_1
       APP_PORT: 80
 
   # Stock nginx, not a custom image — see hooks/pre-start, which renders the
@@ -32,7 +32,7 @@ services:
       # the gateway is what implements the Esplora-style /api/X -> /api/v1/X
       # rewrite the wallet client expects. Container-to-container traffic,
       # so it never touches app_proxy or needs an auth cookie.
-      CHAIN_API_URL: http://heartwood-v2_gateway_1/api
+      CHAIN_API_URL: http://caravan-store-heartwood-v2_gateway_1/api
     volumes:
       - ${APP_DATA_DIR}/data/wallet:/data
 
@@ -42,10 +42,10 @@ services:
     init: true
     restart: on-failure
     stop_grace_period: 1m
-    command: "./wait-for heartwood-v2_mempool-api_1:8999 --timeout=720 -- nginx -g 'daemon off;'"
+    command: "./wait-for caravan-store-heartwood-v2_mempool-api_1:8999 --timeout=720 -- nginx -g 'daemon off;'"
     environment:
       FRONTEND_HTTP_PORT: "8080"
-      BACKEND_MAINNET_HTTP_HOST: heartwood-v2_mempool-api_1
+      BACKEND_MAINNET_HTTP_HOST: caravan-store-heartwood-v2_mempool-api_1
       BACKEND_MAINNET_HTTP_PORT: "8999"
     depends_on:
       - mempool-api
@@ -56,7 +56,7 @@ services:
     init: true
     restart: on-failure
     stop_grace_period: 1m
-    command: "./wait-for-it.sh heartwood-v2_db_1:3306 --timeout=720 --strict -- ./start.sh"
+    command: "./wait-for-it.sh caravan-store-heartwood-v2_db_1:3306 --timeout=720 --strict -- ./start.sh"
     volumes:
       - ${APP_DATA_DIR}/data/mempool-cache:/backend/cache
     environment:
@@ -73,7 +73,7 @@ services:
       ELECTRUM_PORT: $APP_ELECTRS_NODE_PORT
       ELECTRUM_TLS: "false"
       DATABASE_ENABLED: "true"
-      DATABASE_HOST: heartwood-v2_db_1
+      DATABASE_HOST: caravan-store-heartwood-v2_db_1
       DATABASE_PORT: "3306"
       DATABASE_DATABASE: "mempool"
       DATABASE_USERNAME: "mempool"
