@@ -1,0 +1,47 @@
+manifestVersion: 1
+id: heartwood-v2
+category: bitcoin
+name: Heartwood
+version: "2fc9e37"
+tagline: Self-hosted Bitcoin explorer and wallet (v2 rewrite)
+description: >-
+  Heartwood v2 is a from-scratch rewrite of the Heartwood wallet on top of a
+  self-hosted block explorer (a fork of The Mempool Open Source Project).
+  This is a separate, independent app from the earlier "Heartwood" package —
+  installing this one does not touch or migrate data from that app.
+
+
+  Early/experimental release: the wallet has no login or account system yet.
+  Umbrel's own sign-in protects the app from the outside, but anyone signed
+  in to this Umbrel can open it — do not store meaningful funds here yet.
+
+
+  Requires the Bitcoin Core and Electrum Server (electrs) apps to be
+  installed first. The block explorer indexes directly against your own
+  node and Electrum server — no third-party data source is used.
+
+
+  This product includes GeoLite2 data created by MaxMind, available from
+  https://www.maxmind.com
+releaseNotes: ""
+
+developer: Alex Martinez
+website: https://github.com/AlexM223/heartwood
+dependencies:
+  - bitcoin
+  - electrs
+repo: https://github.com/AlexM223/heartwood
+support: https://github.com/AlexM223/heartwood/issues
+
+port: 3213
+gallery: []
+path: ""
+
+defaultUsername: ""
+defaultPassword: ""
+
+backupIgnore:
+  - data/mempool-cache/*
+
+submitter: Alex Martinez
+submission: https://github.com/AlexM223/umbrel-community-app-store

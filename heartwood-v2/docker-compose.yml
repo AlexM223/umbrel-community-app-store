@@ -1,0 +1,111 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: heartwood-v2_gateway_1
+      APP_PORT: 80
+
+  # Stock nginx, not a custom image — see hooks/pre-start, which renders the
+  # Heartwood routing table into data/nginx/nginx.conf on every start and
+  # bind-mounts it in below. Keeping routing in a hook (not baked into an
+  # image) means routing changes ship by editing this package, no image
+  # rebuild/republish required.
+  gateway:
+    image: nginx:alpine@sha256:54f2a904c251d5a34adf545a72d32515a15e08418dae0266e23be2e18c66fefa
+    restart: on-failure
+    depends_on:
+      - wallet
+      - mempool-web
+      - mempool-api
+    volumes:
+      - ${APP_DATA_DIR}/data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  wallet:
+    image: ghcr.io/alexm223/heartwood-wallet:2fc9e37@sha256:35a12cadf52c22a63155a0c4e6eb7b207ccb32489ebba27e9661325a4842c0fe
+    restart: on-failure
+    user: "1000:1000"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      DATA_DIR: /data
+      # Round-trips through the gateway (not straight to mempool-api) because
+      # the gateway is what implements the Esplora-style /api/X -> /api/v1/X
+      # rewrite the wallet client expects. Container-to-container traffic,
+      # so it never touches app_proxy or needs an auth cookie.
+      CHAIN_API_URL: http://heartwood-v2_gateway_1/api
+    volumes:
+      - ${APP_DATA_DIR}/data/wallet:/data
+
+  mempool-web:
+    image: mempool/frontend:v3.3.1@sha256:0a162e7e0d26a01e9686ddf69c96c4beae5fe10b0daa1020f3d392e033c058f1
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    command: "./wait-for heartwood-v2_mempool-api_1:8999 --timeout=720 -- nginx -g 'daemon off;'"
+    environment:
+      FRONTEND_HTTP_PORT: "8080"
+      BACKEND_MAINNET_HTTP_HOST: heartwood-v2_mempool-api_1
+      BACKEND_MAINNET_HTTP_PORT: "8999"
+    depends_on:
+      - mempool-api
+
+  mempool-api:
+    image: mempool/backend:v3.3.1@sha256:358c0a517c8dcf26e7f5c02447de5bab33ec7e3fa6318685cf8012ce36098e3a
+    user: "1000:1000"
+    init: true
+    restart: on-failure
+    stop_grace_period: 1m
+    command: "./wait-for-it.sh heartwood-v2_db_1:3306 --timeout=720 --strict -- ./start.sh"
+    volumes:
+      - ${APP_DATA_DIR}/data/mempool-cache:/backend/cache
+    environment:
+      # Electrum-backed indexing (not "none") — the wallet's Esplora-style
+      # address/balance/UTXO endpoints only exist when the backend has an
+      # Electrum server behind it, so electrs is a hard dependency, not an
+      # optional enhancement.
+      MEMPOOL_BACKEND: "electrum"
+      CORE_RPC_HOST: $APP_BITCOIN_NODE_IP
+      CORE_RPC_PORT: $APP_BITCOIN_RPC_PORT
+      CORE_RPC_USERNAME: $APP_BITCOIN_RPC_USER
+      CORE_RPC_PASSWORD: $APP_BITCOIN_RPC_PASS
+      ELECTRUM_HOST: $APP_ELECTRS_NODE_IP
+      ELECTRUM_PORT: $APP_ELECTRS_NODE_PORT
+      ELECTRUM_TLS: "false"
+      DATABASE_ENABLED: "true"
+      DATABASE_HOST: heartwood-v2_db_1
+      DATABASE_PORT: "3306"
+      DATABASE_DATABASE: "mempool"
+      DATABASE_USERNAME: "mempool"
+      DATABASE_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
+      STATISTICS_ENABLED: "true"
+      MEMPOOL_HTTP_PORT: "8999"
+      MEMPOOL_CACHE_DIR: "/backend/cache"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:10.5.21@sha256:f3ec8c1d1cd3d62a21e7c6e3dee4cb33227c7df6dab5644bf2c077e21dfbc63d
+    user: "1000:1000"
+    restart: on-failure
+    environment:
+      MYSQL_DATABASE: "mempool"
+      MYSQL_USER: "mempool"
+      MYSQL_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_ROOT_PASSWORD}"
+    volumes:
+      - ${APP_DATA_DIR}/data/mysql:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - mempool
+        - "-p${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
+      interval: 5s
+      timeout: 5s
+      retries: 10
