@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.6"
+version: "0.2.7"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,20 +24,20 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  The connection to your Bitcoin server now keeps a lane reserved for the
-  things you're actively doing — opening a wallet, sending a transaction —
-  kept separate from routine background syncing. A big background sync can no
-  longer crowd out an action you just took, so interactive steps stay
-  responsive even while everything catches up behind the scenes.
+  The balance on your Home screen used to be the slowest thing in the app — it
+  could freeze for several seconds because it wasn't loading the same fast way
+  as everything else. It now appears instantly, in step with the rest of the
+  screen.
 
 
-  Scanning a wallet's unspent coins is faster too. It now happens in a single
-  batched request instead of one request per address, which makes a noticeable
-  difference on wallets that have used a lot of addresses over time.
+  The block explorer was also working harder than it needed to. In the
+  background it kept re-checking mining difficulty and network hashrate over
+  and over, even though those barely move between blocks. It now refreshes
+  those figures only when a new block actually arrives.
 
 
   No data migration — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.6
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.7
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
