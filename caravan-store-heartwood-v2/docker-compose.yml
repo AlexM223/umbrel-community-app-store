@@ -77,7 +77,7 @@ services:
       DATABASE_PORT: "3306"
       DATABASE_DATABASE: "mempool"
       DATABASE_USERNAME: "mempool"
-      DATABASE_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
+      DATABASE_PASSWORD: "${APP_CARAVAN_STORE_HEARTWOOD_V2_MARIADB_PASSWORD}"
       STATISTICS_ENABLED: "true"
       MEMPOOL_HTTP_PORT: "8999"
       MEMPOOL_CACHE_DIR: "/backend/cache"
@@ -92,8 +92,8 @@ services:
     environment:
       MYSQL_DATABASE: "mempool"
       MYSQL_USER: "mempool"
-      MYSQL_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${APP_HEARTWOOD_V2_MARIADB_ROOT_PASSWORD}"
+      MYSQL_PASSWORD: "${APP_CARAVAN_STORE_HEARTWOOD_V2_MARIADB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${APP_CARAVAN_STORE_HEARTWOOD_V2_MARIADB_ROOT_PASSWORD}"
     volumes:
       - ${APP_DATA_DIR}/data/mysql:/var/lib/mysql
     healthcheck:
@@ -105,7 +105,7 @@ services:
         - localhost
         - -u
         - mempool
-        - "-p${APP_HEARTWOOD_V2_MARIADB_PASSWORD}"
+        - "-p${APP_CARAVAN_STORE_HEARTWOOD_V2_MARIADB_PASSWORD}"
       interval: 5s
       timeout: 5s
       retries: 10
