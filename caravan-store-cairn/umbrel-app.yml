@@ -2,7 +2,7 @@ manifestVersion: 1
 id: caravan-store-cairn
 category: bitcoin
 name: Heartwood
-version: "0.2.7"
+version: "0.2.8"
 tagline: Self-hosted Bitcoin command center
 description: >-
   Heartwood is a self-hosted, watch-only Bitcoin wallet navigator and block
@@ -24,20 +24,28 @@ description: >-
   Passkey login requires HTTPS — on Umbrel's default .local address, use
   password login.
 releaseNotes: >-
-  The balance on your Home screen used to be the slowest thing in the app — it
-  could freeze for several seconds because it wasn't loading the same fast way
-  as everything else. It now appears instantly, in step with the rest of the
-  screen.
+  First of several planned releases removing Cairn's dependency on a
+  third-party public indexer for chain data. Fee estimates, the recent-blocks
+  list, network difficulty/hashrate, and address lookups used to be fetched
+  from a public service that self-hosted setups often can't reach from
+  inside their Docker container — those screens could fail outright. They
+  now come straight from your own Electrum server connection instead, with
+  zero third-party dependency.
 
 
-  The block explorer was also working harder than it needed to. In the
-  background it kept re-checking mining difficulty and network hashrate over
-  and over, even though those barely move between blocks. It now refreshes
-  those figures only when a new block actually arrives.
+  There's also a new "Bitcoin Core RPC" section in Admin → Settings with a
+  connection test, for operators who want to point Cairn at their own
+  Bitcoin Core node.
+
+
+  Known limitation: block detail pages, transaction detail pages, and the
+  mempool summary are still backed by the public indexer and may still fail
+  without internet access from the container — that migration is planned
+  for a follow-up release.
 
 
   No data migration — safe update from any earlier version. Full notes:
-  https://github.com/AlexM223/cairn/releases/tag/v0.2.7
+  https://github.com/AlexM223/cairn/releases/tag/v0.2.8
 
 developer: Alex Martinez
 website: https://github.com/AlexM223/cairn
