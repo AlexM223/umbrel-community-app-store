@@ -1,0 +1,43 @@
+manifestVersion: 1
+id: caravan-store-heartwood
+category: bitcoin
+name: Heartwood
+version: "0.2.9"
+tagline: Your self-hosted Bitcoin command center
+description: >-
+  Heartwood is a self-hosted Bitcoin command center: a block explorer,
+  watch-only wallets, PSBT construction, hardware-wallet signing, multisig,
+  and multi-user access with passkeys — all running against your own node.
+
+
+  First run: open the app and sign in with the username and password shown
+  on this page (Umbrel fills them in for you). You'll immediately be asked to
+  set your own email and password — the initial credentials are single-use and
+  cannot be reused.
+
+
+  Hardware-wallet signing (WebHID/WebSerial) requires a browser secure context,
+  so it is served over HTTPS at https://<your-umbrel-host>:4488. Your browser
+  will warn about the self-signed certificate that Heartwood generates on first
+  boot — accept it to continue. Everything else works over the normal app URL.
+
+
+  Chain backend: Heartwood connects to your own Electrum server or Bitcoin Core
+  RPC. Configure this under Settings → Chain Backend after logging in; no
+  external services are contacted.
+releaseNotes: ""
+developer: Alex Martinez
+website: https://github.com/AlexM223/cairn
+dependencies: []
+repo: https://github.com/AlexM223/cairn
+support: https://github.com/AlexM223/cairn/issues
+port: 3211
+gallery: []
+path: ""
+defaultUsername: "admin@cairn.local"
+deterministicPassword: true
+backupIgnore:
+  - data/logs
+  - data/tls
+submitter: Alex Martinez
+submission: https://github.com/getumbrel/umbrel-apps/pull/0000

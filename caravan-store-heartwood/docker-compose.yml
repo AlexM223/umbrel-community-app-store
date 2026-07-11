@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: caravan-store-heartwood_web_1
+      APP_PORT: 3000
+
+  web:
+    image: ghcr.io/alexm223/cairn:0.2.9@sha256:1891948a4af614a43cb7adfee2990e56008494907f5582c042629b75fcb5b814
+    restart: on-failure
+    stop_grace_period: 1m
+    init: true
+    user: "1000:1000"
+    ports:
+      # Raw host port for hardware-wallet signing (needs an HTTPS secure context
+      # that app_proxy's plain HTTP cannot provide). host 4488 -> container 3443.
+      - "4488:3443"
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    environment:
+      # HTTP port app_proxy connects to
+      PORT: 3000
+      # First-run admin bootstrap; forces a credential reset on first login
+      CAIRN_ADMIN_PASSWORD: ${APP_PASSWORD}
+      # Keeps the session cookie non-Secure over plain-HTTP Umbrel and sets the
+      # WebAuthn RP origin + notification deep links. Port MUST match manifest `port`.
+      CAIRN_ORIGIN: http://${DEVICE_DOMAIN_NAME}:3211
+      # Advertised HTTPS port, since the published host port (4488) differs from 3443
+      CAIRN_HTTPS_EXTERNAL_PORT: 4488
+      # Better client IPs for rate-limiting/audit behind the proxy; safely ignored if absent
+      ADDRESS_HEADER: x-forwarded-for
