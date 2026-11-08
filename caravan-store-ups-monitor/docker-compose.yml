@@ -1,0 +1,50 @@
+services:
+  app_proxy:
+    environment:
+      APP_HOST: caravan-store-ups-monitor_web_1
+      APP_PORT: 8080
+
+  # NUT server: runs usbhid-ups (the UPS driver) + upsd (network server) +
+  # upsmon (monitor/shutdown agent) in one container, talking to the UPS
+  # over USB. privileged: true is required here -- not optional seasoning --
+  # because upstream's own entrypoint needs raw USB bus access to drive
+  # whatever UPS is plugged in (vendor/product IDs vary per device, so a
+  # single fixed --device mapping can't be baked into the package ahead of
+  # time). This is the one host-access exception for this package: no host
+  # networking, no Docker socket, nothing else privileged.
+  nut:
+    image: instantlinux/nut-upsd:2.8.5-r1@sha256:a186d74a586ec4e10494270f6a52e26bb5e50663d2f8570865f5bd38273e096e
+    restart: on-failure
+    privileged: true
+    environment:
+      NAME: ups
+      DRIVER: usbhid-ups
+      PORT: auto
+      API_USER: upsmon
+      API_PASSWORD: ${APP_CARAVAN_STORE_UPS_MONITOR_NUT_PASSWORD}
+      SERVER: primary
+      # CyberPower units are chatty on USB polling and some models need more
+      # slack than NUT's 15s default before upsd calls data stale.
+      MAXAGE: 25
+    ports:
+      # Raw NUT protocol port, published so other NUT masters/clients on the
+      # LAN (upsc, upsmon on other hosts, etc.) can also reach this server --
+      # the standard reason to publish a non-HTTP protocol port directly.
+      # Protected by upsd's own username/password auth (API_USER/API_PASSWORD
+      # above), not by network obscurity.
+      - "3493:3493"
+    volumes:
+      - ${APP_DATA_DIR}/data/nut:/etc/nut/local
+
+  # PeaNUT: the web dashboard. Pre-wired on first run (see hooks/pre-start)
+  # to talk to the nut service above; editable afterwards from its own UI.
+  web:
+    image: brandawg93/peanut:6.1.2@sha256:b58b9627f77448f25e29f772870ee01f0f5a245c6ad7d6e0d7f620d1bb0fb623
+    restart: on-failure
+    user: "1000:1000"
+    depends_on:
+      - nut
+    environment:
+      WEB_PORT: "8080"
+    volumes:
+      - ${APP_DATA_DIR}/data/config:/config

@@ -1,0 +1,45 @@
+manifestVersion: 1
+id: caravan-store-ups-monitor
+storage:
+  dataRoot: data
+category: networking
+name: UPS Monitor
+version: "6.1.2"
+tagline: Monitor a USB UPS with Network UPS Tools
+description: >-
+  Bundles a Network UPS Tools (NUT) server with the PeaNUT web dashboard, so
+  you can watch battery charge, load, voltage and runtime for a USB-connected
+  UPS (CyberPower and most other NUT-supported brands) right from your
+  browser, with no separate host install.
+
+
+  Needs direct USB access to talk to the physical UPS, so this app runs its
+  NUT-server container in privileged mode -- that is the one host-access
+  exception it takes, and only that one container has it.
+
+
+  Ships configured for the common case (driver=usbhid-ups, auto port
+  detection). If your UPS needs a specific vendor ID, serial number, or a
+  different NUT driver, edit the generated files under this app's data
+  folder (data/nut) or PeaNUT's own settings screen after first install.
+
+
+  On first run, PeaNUT will ask you to create its admin account -- that
+  account is local to the dashboard and separate from your Umbrel login.
+releaseNotes: ""
+
+developer: PeaNUT & Network UPS Tools (community projects)
+website: https://github.com/Brandawg93/PeaNUT
+dependencies: []
+repo: https://github.com/Brandawg93/PeaNUT
+support: https://github.com/Brandawg93/PeaNUT/issues
+
+port: 3214
+gallery: []
+path: ""
+
+defaultUsername: ""
+defaultPassword: ""
+
+submitter: Alex Martinez
+submission: https://github.com/AlexM223/umbrel-community-app-store

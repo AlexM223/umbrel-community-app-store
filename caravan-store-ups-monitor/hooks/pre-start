@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="${APP_DATA_DIR:-$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")}"
+DATA_DIR="${APP_DATA_ROOT:-${APP_DIR}/data}"
+
+# Seed PeaNUT's config with a working connection to the bundled nut-upsd
+# server on first run only. Never overwrite a config the user has already
+# edited through PeaNUT's own UI or by hand.
+mkdir -p "${DATA_DIR}/config"
+if [ ! -f "${DATA_DIR}/config/settings.yml" ] && [ -f "${APP_DIR}/settings.yml" ]; then
+  cp "${APP_DIR}/settings.yml" "${DATA_DIR}/config/settings.yml"
+fi
